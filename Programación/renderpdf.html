@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor de Word y PDF en Pantalla</title>
+    
+    <!-- LIBRERIA MAMMOTH (Para Word .docx) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    
+    <!-- LIBRERIA PDF.JS (Para PDF) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f4f9; }
+        .contenedor { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .input-zona { border: 2px dashed #007bff; padding: 30px; text-align: center; margin-bottom: 20px; border-radius: 4px; cursor: pointer; background: #f8fafd; }
+        #visor-contenido { border: 1px solid #ccc; padding: 20px; min-height: 200px; background: #fff; overflow-y: auto; max-height: 500px; border-radius: 4px; }
+        #visor-contenido img { max-width: 100%; height: auto; }
+        .estado-libreria { font-size: 0.9em; margin-bottom: 15px; font-weight: bold; }
+        
+        /* Estilos para las páginas del PDF */
+        .pagina-pdf {
+            display: block;
+            margin: 15px auto;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+
+<div class="contenedor">
+    <h2>INSERTAR Y VISUALIZAR EL DOCUMENTO (Word o PDF)</h2>
+    
+    <!-- INDICADOR DE LIBRERÍAS -->
+    <div id="estado" class="estado-libreria" style="color: #d9534f;">Verificando conexión con librerías...</div>
+    
+    <!-- INSERTAR ARCHIVO -->
+    <div class="input-zona" onclick="document.getElementById('archivo-doc').click()">
+        <label style="cursor: pointer; font-weight: bold; color: #007bff;">
+            Haz clic aquí para seleccionar tu archivo (.docx o .pdf)
+        </label>
+        <input type="file" id="archivo-doc" accept=".docx, .pdf" style="display: none;">
+    </div>
+
+    <h3>Contenido del Documento:</h3>
+    <div id="visor-contenido">VISUALIZAR  DOCUMENTO...</div>
+</div>
+
+<script>
+    // CONFIGURACIÓN DE WORKER DE PDF.JS
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+    // COMPRUEBA LAS LIBRERIAS AL CARGAR
+    window.addEventListener('DOMContentLoaded', () => {
+        const estadoDiv = document.getElementById('estado');
+        const mammothCargado = typeof mammoth !== 'undefined';
+        const pdfjsCargado = typeof pdfjsLib !== 'undefined';
+
+        if (mammothCargado && pdfjsCargado) {
+            estadoDiv.textContent = "✓ Librerías de Word y PDF listas para procesar archivos.";
+            estadoDiv.style.color = "#28a745";
+        } else {
+            estadoDiv.textContent = "✗ Error al cargar una o más librerías. Revisa tu conexión a internet.";
+            estadoDiv.style.color = "#d9534f";
+        }
+    });
+
+    // PROCESAMIENTO DEL DOCUMENTO
+    document.getElementById('archivo-doc').addEventListener('change', function(evento) {
+        if (!evento.target.files || evento.target.files.length === 0) {
+            return; 
+        }
+        
+        const archivoSeleccionado = evento.target.files[0];
+        const visor = document.getElementById('visor-contenido');
+        const nombreArchivo = archivoSeleccionado.name.toLowerCase();
+        
+        visor.innerHTML = "<em>Procesando y convirtiendo documento...</em>";
+
+        // PROCESA UN ARCHIVO PDF
+        if (archivoSeleccionado.type === "application/pdf" || nombreArchivo.endsWith(".pdf")) {
+            procesarPDF(archivoSeleccionado, visor);
+        } 
+        // PROCESAR ARCHIVO WORD (.DOCX)
+        else if (nombreArchivo.endsWith(".docx")) {
+            procesarWord(archivoSeleccionado, visor);
+        } 
+        else {
+            visor.innerHTML = "<span style='color:red;'> Formato no soportado. Por favor, sube un archivo .docx o .pdf.</span>";
+        }
+    });
+
+    // FUNCION RENDERIZAR 
+    // (GENERA LA IMAGEN DEL DOCUMENTO) PDF CON PDF.JS
+    function procesarPDF(archivo, visor) {
+        const lector = new FileReader();
+
+        lector.onload = function(e) {
+            const typedarray = new Uint8Array(e.target.result);
+
+            pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
+                visor.innerHTML = ""; // Limpiar visor
+
+                // RENDERIZA LAS HOJAS DEL DOCUMENTO EN UN CANVAS  HTML5
+                for (let numPagina = 1; numPagina <= pdf.numPages; numPagina++) {
+                    pdf.getPage(numPagina).then(function(pagina) {
+                        const canvas = document.createElement('canvas');
+                        canvas.className = 'pagina-pdf';
+                        const contexto = canvas.getContext('2d');
+                        
+                        const escala = 1.2;
+                        const viewport = pagina.getViewport({ scale: escala });
+
+                        canvas.height = viewport.height;
+                        canvas.width = viewport.width;
+
+                        visor.appendChild(canvas);
+
+                        pagina.render({
+                            canvasContext: contexto,
+                            viewport: viewport
+                        });
+                    });
+                }
+            }).catch(function(error) {
+                console.error(error);
+                visor.innerHTML = "<span style='color:red;'>Error al procesar el archivo PDF. Es posible que esté protegido o dañado.</span>";
+            });
+        };
+
+        lector.readAsArrayBuffer(archivo);
+    }
+
+    // FUNCIÓN PARA RENDERIZAR WORD CON MAMMOTH.JS
+    function procesarWord(archivo, visor) {
+        const lector = new FileReader();
+
+        lector.onload = function(eventoLectura) {
+            const arrayBuffer = eventoLectura.target.result;
+
+            const opciones = {
+                convertImage: mammoth.images.inline(function(element) {
+                    return element.read("base64").then(function() {
+                        return {
+                            src: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='30'><rect width='120' height='30' style='fill:%23ddd;'/><text x='10' y='20' style='font-family:Arial;font-size:12px;fill:%23666;'>[Imagen Omitida]</text></svg>"
+                        };
+                    });
+                })
+            };
+
+            mammoth.convertToHtml({ arrayBuffer: arrayBuffer }, opciones)
+                .then(function(resultado) {
+                    if (resultado.value.trim() === "") {
+                        visor.innerHTML = "<span style='color:orange;'>El documento está vacío o no contiene texto compatible.</span>";
+                    } else {
+                        visor.innerHTML = resultado.value;
+                    }
+                })
+                .catch(function(error) {
+                    console.error(error);
+                    visor.innerHTML = "<span style='color:red;'>Error crítico al procesar la estructura del documento Word.</span>";
+                });
+        };
+
+        lector.onerror = function() {
+            visor.innerHTML = "<span style='color:red;'>Error físico al leer el archivo desde el disco duro.</span>";
+        };
+
+        lector.readAsArrayBuffer(archivo);
+    }
+</script>
+
+</body>
+</html>

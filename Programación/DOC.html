@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor de Word en Pantalla</title>
+    
+    <!--CARGA DE LA LIBRERIA OFICIAL -->
+    <script src="https://cloudflare.com"></script>
+    
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f4f9; }
+        .contenedor { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .input-zona { border: 2px dashed #007bff; padding: 30px; text-align: center; margin-bottom: 20px; border-radius: 4px; cursor: pointer; background: #f8fafd; }
+        #visor-contenido { border: 1px solid #ccc; padding: 20px; min-height: 200px; background: #fff; overflow-y: auto; max-height: 500px; border-radius: 4px; }
+        #visor-contenido img { max-width: 100%; height: auto; }
+        .estado-libreria { font-size: 0.9em; margin-bottom: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="contenedor">
+    <h2>Insertar y Visualizar Documento de Word</h2>
+    
+    <!-- INDICADOR DE LA LIBRERIA (COMO VISULIZA) -->
+    <div id="estado" class="estado-libreria" style="color: #d9534f;">Verificando conexión con librería Mammoth...</div>
+    
+    <!-- INSERTA EL DOCUMENTO -->
+    <div class="input-zona" onclick="document.getElementById('archivo-word').click()">
+        <label style="cursor: pointer; font-weight: bold; color: #007bff;">
+            Haz clic aquí para seleccionar tu archivo (.docx)
+        </label>
+        <input type="file" id="archivo-word" accept=".docx" style="display: none;">
+    </div>
+
+    <h3>Contenido del Documento:</h3>
+    <div id="visor-contenido">El documento seleccionado se mostrará aquí...</div>
+</div>
+
+<script>
+    // SE COMPRUEBA LA LIBRERIA
+    window.addEventListener('DOMContentLoaded', () => {
+        const estadoDiv = document.getElementById('estado');
+        if (typeof mammoth !== 'undefined') {
+            estadoDiv.textContent = "✓ Librería lista para procesar archivos.";
+            estadoDiv.style.color = "#28a745";
+        } else {
+            estadoDiv.textContent = "✗ Error: La librería Mammoth no cargó. Revisa tu conexión a internet o descarga el archivo local.";
+            estadoDiv.style.color = "#d9534f";
+        }
+    });
+
+    // SE PROCESA EL ARCHIVO CARGADO
+    document.getElementById('archivo-word').addEventListener('change', function(evento) {
+        // Validación de existencia segura de archivos en la lista del input
+        if (!evento.target.files || evento.target.files.length === 0) {
+            return; 
+        }
+        
+        const archivoSeleccionado = evento.target.files[0];
+        const visor = document.getElementById('visor-contenido');
+        
+        visor.innerHTML = "<em>Procesando y convirtiendo documento...</em>";
+
+        const lector = new FileReader();
+        
+        lector.onload = function(eventoLectura) {
+    const arrayBuffer = eventoLectura.target.result;
+
+    // CONFIGURACIÓN DE ALTO RENDIMIENTO:
+    // SE LE INDICA A MAMMOTH COMO TRATAR EL DOCUMENTO
+    const opciones = {
+
+        // MUESTRA EN UN FONDO GRIS LA IMAGEN PROCESADA
+        convertImage: function(elemento) {
+            return {
+                src: "data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='100' height='30'><rect width='100' height='30' style='fill:%23ddd;'/><text x='10'y='20' style='font-family:Arial;font-size:12px;fill:%23666;'>[Imagen Omitida]</text></svg>"
+            };
+        }
+    };
+
+    // SE PASA EL DOCUMENTO OBTIMIZADO A LA PAGINA
+    mammoth.convertToHtml({ arrayBuffer: arrayBuffer }, opciones)
+        .then(function(resultado) {
+            if (resultado.value.trim() === "") {
+                visor.innerHTML = "<span style='color:orange;'> El documento está vacío o no contiene texto compatible.</span>";
+            } else {
+                visor.innerHTML = resultado.value;
+            }
+        })
+        .catch(function(error) {
+            console.error(error);
+            visor.innerHTML = "<span style='color:red;'> Error crítico al procesar la estructura.</span>";
+        });
+};
+
+        
+
+        lector.onerror = function() {
+            visor.innerHTML = "<span style='color:red;'>Error físico al leer el archivo desde el disco duro.</span>";
+        };
+
+        // ALMACENAMIENTO TEMPORAL
+        lector.readAsArrayBuffer(archivoSeleccionado);
+    });
+</script>
+
+</body>
+</html>
