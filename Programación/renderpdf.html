@@ -4,21 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Visor de Word y PDF en Pantalla</title>
-    
-    <!-- LIBRERIA MAMMOTH (Para Word .docx) -->
+        <!-- LIBRERIA MAMMOTH (Para Word .docx) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
     
     <!-- LIBRERIA PDF.JS (Para PDF) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    
+
     <style>
-        body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f4f9; }
-        .contenedor { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #E2E8F3; text-align: center; }
+        .contenedor { max-width: 800px; margin: 0 auto; background: #D5E1F2; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
         .input-zona { border: 2px dashed #007bff; padding: 30px; text-align: center; margin-bottom: 20px; border-radius: 4px; cursor: pointer; background: #f8fafd; }
         #visor-contenido { border: 1px solid #ccc; padding: 20px; min-height: 200px; background: #fff; overflow-y: auto; max-height: 500px; border-radius: 4px; }
         #visor-contenido img { max-width: 100%; height: auto; }
-        .estado-libreria { font-size: 0.9em; margin-bottom: 15px; font-weight: bold; }
-        
+        .estado-libreria { font-style: italic; font-size: 0.9em; margin-bottom: 15px; font-weight: bold; }
+         
         /* Estilos para las páginas del PDF */
         .pagina-pdf {
             display: block;
@@ -27,12 +26,16 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.15);
             max-width: 100%;
         }
+        .titulo {
+         color: #004085;
+        }
     </style>
+
 </head>
 <body>
 
-<div class="contenedor">
-    <h2>INSERTAR Y VISUALIZAR EL DOCUMENTO (Word o PDF)</h2>
+    <div class="contenedor">
+    <h2 class="titulo">INSERTAR Y VISUALIZAR EL DOCUMENTO (Word o PDF)</h2>
     
     <!-- INDICADOR DE LIBRERÍAS -->
     <div id="estado" class="estado-libreria" style="color: #d9534f;">Verificando conexión con librerías...</div>
@@ -45,7 +48,7 @@
         <input type="file" id="archivo-doc" accept=".docx, .pdf" style="display: none;">
     </div>
 
-    <h3>Contenido del Documento:</h3>
+    <h3 class="titulo">Contenido del Documento:</h3>
     <div id="visor-contenido">VISUALIZAR  DOCUMENTO...</div>
 </div>
 
@@ -172,6 +175,9 @@
         lector.readAsArrayBuffer(archivo);
     }
 </script>
-
+    
 </body>
 </html>
+
+
+ 
