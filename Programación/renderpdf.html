@@ -29,13 +29,16 @@
         .titulo {
          color: #004085;
         }
+    
     </style>
 
 </head>
 <body>
+    
 
     <div class="contenedor">
-    <h2 class="titulo">INSERTAR Y VISUALIZAR EL DOCUMENTO (Word o PDF)</h2>
+    <img class="logo" src="https://lacademiateprepara.com/moodle/pluginfile.php/1/theme_boost_union/logo/0x200/1778253775/logo%20sin%20fondo.png" alt="">
+    <h2 class="titulo" >INSERTAR Y VISUALIZAR EL DOCUMENTO (Word o PDF)</h2>
     
     <!-- INDICADOR DE LIBRERÍAS -->
     <div id="estado" class="estado-libreria" style="color: #d9534f;">Verificando conexión con librerías...</div>
@@ -51,9 +54,11 @@
     <h3 class="titulo">Contenido del Documento:</h3>
     <div id="visor-contenido">VISUALIZAR  DOCUMENTO...</div>
 </div>
-
+	
 <script>
-    // CONFIGURACIÓN DE WORKER DE PDF.JS
+    //fuente inspiración https://www.academiait.com.ar/assets/images/ciber.webp
+
+    // CONFIGURACIÓN DE WORKER DE PDF.JS     
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
 
     // COMPRUEBA LAS LIBRERIAS AL CARGAR
