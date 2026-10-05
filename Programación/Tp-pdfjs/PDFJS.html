@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visor de Word, PDF y Excel en Pantalla</title>
+    <link rel="stylesheet" href="./css/estyle.css">
+    
+    <!-- LIBRERIA MAMMOTH (Para Word .docx) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    
+    <!-- LIBRERIA PDF.JS (Para PDF) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+
+    <!-- LIBRERIA SHEETJS (Para Excel .xlsx) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>    <!-- //fallo de la librería revisar -->
+ 
+    
+</head>
+<body>
+
+<div class="contenedor">
+    <h2 class="titulo">INSERTAR Y VISUALIZAR EL DOCUMENTO (Word, PDF o Excel)</h2>
+    <img  src="https://lacademiateprepara.com/moodle/pluginfile.php/1/theme_boost_union/logo/0x200/1778253775/logo%20sin%20fondo.png" alt="">
+
+    <!-- INDICADOR DE LIBRERÍAS -->
+    <div id="estado" class="estado-libreria" style="color: #d9534f;">Verificando conexión con librerías...</div>
+    
+    <!-- INSERTAR ARCHIVO -->
+    <div class="input-zona" onclick="document.getElementById('archivo-doc').click()">
+        <label style="cursor: pointer; font-weight: bold; color: #007bff;">
+            Haz clic aquí para seleccionar tu archivo (.docx, .pdf, .xlsx, xls)
+        </label>
+        <input type="file" id="archivo-doc" accept=".docx, .pdf, .xlsx , xls" style="display: none;">
+    </div>
+
+    <div class="" onclick="document.getElementById('clean-doc').click()">
+    <input class="button-clean" id="clean-doc" type="button" value="Limpiar Contenido">
+    </div>    
+    
+    <h3 class="titulo">Contenido del Documento:</h3>
+    <div id="visor-contenido">VISUALIZAR DOCUMENTO...</div>
+</div>
+
+<script src="./script/eventos.js"></script>
+
+
+</body>
+</html>

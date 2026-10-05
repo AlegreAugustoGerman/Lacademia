@@ -1,0 +1,51 @@
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #E2E8F3; text-align: center;}
+        .contenedor { max-width: 900px; margin: 0 auto;   padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .input-zona { border: 2px dashed #007bff; padding: 30px; text-align: center; margin-bottom: 20px; border-radius: 4px; cursor: pointer; background: #f8fafd; transition: background 0.3s; }
+        .input-zona:hover { background: #f0f5ff; }
+        .button-container{width: 100%; text-align: center; align-items: center;}
+        .button-clean{width: 20%; font-size: unset;  }
+        #visor-contenido { border: 1px solid #ccc; padding: 20px; min-height: 200px; background: #E2E8F3; overflow: auto; max-height: 600px; border-radius: 4px; }
+        #visor-contenido img { max-width: 100%; height: auto; display: block; margin: 10px auto; }
+        .estado-libreria { font-size: 0.9em; margin-bottom: 15px; font-weight: bold; }
+        
+        /* Estilos para las páginas del PDF */
+        .pagina-pdf {
+            display: block;
+            margin: 15px auto;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            max-width: 100%;
+        }
+
+        /* Estilos específicos para las tablas de Excel */
+        .tabla-excel {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+        .tabla-excel th, .tabla-excel td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .tabla-excel th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+        }
+        .tabla-excel tr:nth-child(even) { background-color: #f9f9f9; }
+        .titulo-hoja {
+            font-size: 1.1em;
+            color: #2e7d32;
+            margin-top: 20px;
+            margin-bottom: 5px;
+            font-weight: bold;
+            border-bottom: 2px solid #2e7d32;
+            padding-bottom: 3px;
+        }
+
+        .titulo {
+         color: #004085;
+        }
