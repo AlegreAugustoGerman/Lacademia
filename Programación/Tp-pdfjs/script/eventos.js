@@ -46,10 +46,40 @@
         else if (nombreArchivo.endsWith(".xls")) {
             procesarExcel(archivoSeleccionado, visor);
         }
+        else if  (nombreArchivo.endsWith(".jpg") || nombreArchivo.endsWith(".png") || nombreArchivo.endsWith(".svg") || nombreArchivo.endsWith(".gif")){
+            procesarImagen(archivoSeleccionado, visor);
+        }
+        
         else {
-            visor.innerHTML = "<span style='color:red;'> Formato no soportado. Por favor, sube un archivo .docx, .pdf o .xlsx, xls.</span>";
+            visor.innerHTML = "<span style='color:red;'> Formato no soportado. Por favor, sube un archivo .docx, .pdf o .xlsx, xls , png , jpg , svg , gitf.</span>";
         }
     });
+//Procesar imageness
+      function procesarImagen(archivo, visor) {
+    const lector = new FileReader();
+
+    lector.onload = function(e) {
+        // Limpiamos el visor por si había un archivo anterior
+        visor.innerHTML = ""; 
+
+        // Creamos un elemento imagen 
+        const img = document.createElement('img');
+        
+        // e.target.result contiene la imagen convertida en base64 (Data URL)
+        img.src = e.target.result;
+        
+        // podría o debería agregar una clase css para controlar su tamaño en el visor
+        img.className = 'imagen-visor'; 
+        img.style.maxWidth = '100%'; // Evita que se desborde del contenedor
+        img.style.height = 'auto';
+
+        // Insertamos la imagen en el visor
+        visor.appendChild(img);
+    };
+
+    // Para imágenes es mejor leerlas como DataURL en lugar de ArrayBuffer
+    lector.readAsDataURL(archivo);
+}
 
     // FUNCIÓN PARA PROCESAR PDF
     function procesarPDF(archivo, visor) {

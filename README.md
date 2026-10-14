@@ -8,6 +8,17 @@
 - Se agrego el logo de lacademia 
 
 
-# Consigna Finalizada: Reset de estado del selector: Limpieza dinámica del valor del input para
-permitir la relectura secuencial de archivos con el mismo nombre.
+# Consigna Finalizada: Reset de estado del selector: Limpieza dinámica del valor del input  
+permite la relectura de archivos con el mismo nombre.
 - Se añadió un botón que resetea el valor de las variables visor, selector
+
+# Consigna Finalizada: Agregar funcionalidad que permita mostrar imagenes de distintos formatos 
+Posibilidad de poder visualizar imagenes jpg , png ,svg ,gift
+- Se añadio la función procesarImagen que permite procesar para visualizar los distintos formatos 
+
+
+
+
+ 
+
+ 
